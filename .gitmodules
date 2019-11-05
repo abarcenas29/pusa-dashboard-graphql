@@ -1,0 +1,6 @@
+[submodule "app/styles"]
+	path = app/styles
+	url = git@github.com:abarcenas29/atomic_classes.git
+[submodule "internals"]
+	path = internals
+	url = git@github.com:abarcenas29/sandbox-webpack.git
