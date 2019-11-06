@@ -14,6 +14,7 @@
     "test": "cross-env NODE_ENV=test && jest --colors"
   },
   "dependencies": {
+    "final-form": "^4.18.5",
     "graphql": "^14.5.8",
     "react": "*",
     "react-dom": "*",

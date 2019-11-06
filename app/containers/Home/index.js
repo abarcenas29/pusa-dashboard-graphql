@@ -1,7 +1,45 @@
 import React from 'react'
-import { graphql, QueryRenderer } from 'react-relay'
+import {
+  graphql,
+  QueryRenderer,
+  createFragmentContainer
+} from 'react-relay'
 
 import environment from 'App/environment'
+
+import Form from './Form'
+import Item from './Item'
+
+const UserList = ({ relay, users }) => {
+  return (
+    <div className='l-d-b'>
+      <Form relay={relay} />
+      <ul>
+        {
+          users.edges.map((r, i) => (
+            <Item key={r.node.id} user={r.node} />
+          ))
+        }
+      </ul>
+    </div>
+  )
+}
+
+const UserListFrag = createFragmentContainer(
+  UserList,
+  {
+    users: graphql`
+      fragment Home_users on userConnection {
+        edges {
+          node {
+            id
+            ...Item_user
+          }
+        }
+      }
+    `
+  }
+)
 
 export default () => {
   return (
@@ -9,26 +47,19 @@ export default () => {
       environment={environment}
       query={graphql`
         query HomeQuery {
-          userList : usersConnection {
-            edges {
-              node {
-                first_name,
-                last_name
-              }
-            }
+          users : usersConnection {
+            ...Home_users
           }
         }
       `}
       variables={{}}
       render={({ error, props }) => {
-        console.log(props, error, 'props')
-        if (props) {
+        if (props && props.users) {
           return (
-            <div>
-            This is Home
-            </div>
+            <UserListFrag users={props.users} />
           )
-        } else {
+        }
+        if (error) {
           return <div>Error</div>
         }
       }}

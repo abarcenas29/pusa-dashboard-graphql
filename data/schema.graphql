@@ -1,3 +1,13 @@
+input inputUser {
+  email: String!
+  first_name: String!
+  last_name: String!
+}
+
+type Mutation {
+  addUser(user: inputUser, after: String, first: Int, before: String, last: Int): userListConnection
+}
+
 """Information about pagination in a connection."""
 type PageInfo {
   """When paginating forwards, are there more items?"""
@@ -18,23 +28,11 @@ type Query {
   usersConnection(after: String, first: Int, before: String, last: Int): userConnection
 }
 
-enum type {
-  employee
-  admin
-  owner
-}
-
 type User {
   id: ID!
   email: String!
   first_name: String!
   last_name: String!
-  middle_name: String
-  password: String!
-  type: type!
-  address: String
-  contact_no: String
-  created_by: ID!
 }
 
 """A connection to a list of items."""
@@ -48,6 +46,24 @@ type userConnection {
 
 """An edge in a connection."""
 type userEdge {
+  """The item at the end of the edge"""
+  node: User
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""A connection to a list of items."""
+type userListConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [userListEdge]
+}
+
+"""An edge in a connection."""
+type userListEdge {
   """The item at the end of the edge"""
   node: User
 
