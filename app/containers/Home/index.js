@@ -10,15 +10,19 @@ import environment from 'App/environment'
 import Form from './Form'
 import Item from './Item'
 
-const UserList = ({ relay, users }) => {
+const UserList = ({ relay, listUser }) => {
+  const { userConnection: { edges } } = listUser
   return (
     <div className='l-d-b'>
-      <Form relay={relay} />
+      <Form relay={relay} listUser={listUser} />
       <ul>
         {
-          users.edges.map((r, i) => (
-            <Item key={r.node.id} user={r.node} />
-          ))
+          edges.map(({ node }, i) => {
+            console.log(node)
+            return (
+              <Item key={node.id} user={node} />
+            )
+          })
         }
       </ul>
     </div>
@@ -28,12 +32,17 @@ const UserList = ({ relay, users }) => {
 const UserListFrag = createFragmentContainer(
   UserList,
   {
-    users: graphql`
-      fragment Home_users on userConnection {
-        edges {
-          node {
-            id
-            ...Item_user
+    listUser: graphql`
+      fragment Home_listUser on UsersType {
+        id
+        userConnection(
+          first: 2147483647 ## As required
+        ) @connection(key: "Home_listUser_userConnection")  {
+          edges {
+            node {
+              id,
+              ...Item_user
+            }
           }
         }
       }
@@ -47,16 +56,16 @@ export default () => {
       environment={environment}
       query={graphql`
         query HomeQuery {
-          users : usersConnection {
-            ...Home_users
+          listUser {
+            ...Home_listUser
           }
         }
       `}
       variables={{}}
       render={({ error, props }) => {
-        if (props && props.users) {
+        if (props && props.listUser) {
           return (
-            <UserListFrag users={props.users} />
+            <UserListFrag listUser={props.listUser} />
           )
         }
         if (error) {

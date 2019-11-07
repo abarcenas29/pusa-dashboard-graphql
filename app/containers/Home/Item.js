@@ -13,7 +13,7 @@ export default createFragmentContainer(
   Item,
   {
     user: graphql`
-      fragment Item_user on User {
+      fragment Item_user on UserType {
         id,
         first_name,
         last_name

@@ -1,0 +1,5 @@
+schemaPath: ./data/schema.graphql
+
+extensions:
+  endpoints:
+    default: http://localhost:5000/graphql

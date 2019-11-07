@@ -1,11 +1,31 @@
-input inputUser {
+input addUserDisplayListInput {
   email: String!
   first_name: String!
   last_name: String!
+  clientMutationId: String
+}
+
+type addUserDisplayListPayload {
+  userConnection: userConnectionConnection
+  clientMutationId: String
+}
+
+input addUserInput {
+  email: String!
+  first_name: String!
+  last_name: String!
+  clientMutationId: String
+}
+
+type addUserPayload {
+  userEdge: userConnectionEdge
+  store: UsersType
+  clientMutationId: String
 }
 
 type Mutation {
-  addUser(user: inputUser, after: String, first: Int, before: String, last: Int): userListConnection
+  addUser(input: addUserInput!): addUserPayload
+  addUserDisplayList(input: addUserDisplayListInput!): addUserDisplayListPayload
 }
 
 """Information about pagination in a connection."""
@@ -24,49 +44,37 @@ type PageInfo {
 }
 
 type Query {
-  user(id: ID!): User
-  usersConnection(after: String, first: Int, before: String, last: Int): userConnection
+  findUser(id: ID!): userConnectionEdge
+  listUser: UsersType
 }
 
-type User {
+"""A connection to a list of items."""
+type userConnectionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [userConnectionEdge]
+}
+
+"""An edge in a connection."""
+type userConnectionEdge {
+  """The item at the end of the edge"""
+  node: UserType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type UsersType {
+  """The ID of an object"""
+  id: ID!
+  userConnection(after: String, first: Int, before: String, last: Int): userConnectionConnection
+}
+
+type UserType {
   id: ID!
   email: String!
   first_name: String!
   last_name: String!
-}
-
-"""A connection to a list of items."""
-type userConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [userEdge]
-}
-
-"""An edge in a connection."""
-type userEdge {
-  """The item at the end of the edge"""
-  node: User
-
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-"""A connection to a list of items."""
-type userListConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [userListEdge]
-}
-
-"""An edge in a connection."""
-type userListEdge {
-  """The item at the end of the edge"""
-  node: User
-
-  """A cursor for use in pagination"""
-  cursor: String!
 }
